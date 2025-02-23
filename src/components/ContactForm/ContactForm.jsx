@@ -2,8 +2,8 @@ import { Field, Form, Formik, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import s from "./ContactForm.module.css";
 import * as Yup from "yup";
-import { nanoid } from "@reduxjs/toolkit";
-import { addContact } from "../../redux/contactsSlice";
+import { useCallback } from "react";
+import { addContact } from "../../redux/contactsOps";
 
 const PatternonlyLetters = /^[A-Za-zА-Яа-яЄєІіЇїҐґ-\s]+$/;
 const PatternPhone = /^(\d{3}-\d{2}-\d{2}|\d{7})$/;
@@ -22,10 +22,13 @@ const ContactSchema = Yup.object().shape({
 const ContactForm = () => {
   const dispatch = useDispatch();
 
-  const hadleSubmit = (values, { resetForm }) => {
-    dispatch(addContact({ ...values, id: nanoid() }));
-    resetForm();
-  };
+  const hadleSubmit = useCallback(
+    (values, { resetForm }) => {
+      dispatch(addContact(values));
+      resetForm();
+    },
+    [dispatch]
+  );
 
   return (
     <div className={s.div}>
